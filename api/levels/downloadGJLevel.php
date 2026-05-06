@@ -7,6 +7,8 @@
 	require_once "../../core/lib/GJPCheck.php";
 	require_once "../../core/lib/exploitPatch.php";
 
+	require_once '../../core/data/LevelDownloadDTO.php';
+
     $Main 		= new Main();
 	$Lib 		= new Lib();
 	$Level 		= new Level();

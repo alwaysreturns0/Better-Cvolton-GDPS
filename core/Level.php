@@ -25,11 +25,6 @@
             $this->repo = new LevelRepository($db->open_connection());
         }
 
-        public function existLevel(string $levelName, int $userID): int
-        {
-            return $this->repo->get_exists($levelName, $userID) ? 1 : 0;
-        }
-
         public function delete(int $userID, int $levelID): string { 
             if (!$this->repo->delete($levelID, $userID)) {
                 return "-1";
@@ -155,7 +150,6 @@
             if ($this->Main->getRolePermission($accountID, "actionSuggestRating"))
             {
                 $this->Main->suggest_level($accountID, $levelID, $difficulty["difficulty"], $starStars, $feature, $difficulty["auto"], $difficulty["demon"]);
-
                 return "1";
             }
 
