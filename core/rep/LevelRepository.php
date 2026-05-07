@@ -45,6 +45,44 @@
             return $result ? LevelDownloadDTO::download($result) : null;
         }
 
+        public function get_download_data(LevelDownloadDTO $data): ?LevelDownloadDTO {
+            $levelID = $data->levelID;
+            $daily_type = 0;
+
+            if ($levelID < 0) {
+                $daily_type = match($levelID) {
+                    -1 => 0,
+                    -2 => 1,
+                    -3 => 2,
+                    default => null
+                };
+
+                if ($daily_type == null) return null;
+
+                $daily = $this->get_daily($daily_type);
+                if (!$daily) return null;
+
+                $levelID = (int) $daily['levelID'];
+            }
+
+            $level = $this->get_donwload_level($levelID);
+
+            if ($level && $data->levelID < 0) {
+                $daily = $this->get_daily($daily_type);
+                $level->set_daily_data((int) $daily['feaID'], $data->levelID);
+            }
+
+            if ($level) {
+                $level->inc = $data->inc;
+                $level->extras = $data->extras;
+                $level->hostname = $data->hostname;
+                $level->gameVersion = $data->gameVersion;
+                $level->binaryVersion = $data->binaryVersion;
+            }
+
+            return $level;
+        }
+
         public function get_daily(int $type): ?array {
             $stmt = $this->db->prepare('
                 SELECT feaID, levelID 
@@ -72,7 +110,7 @@
             $stmt = $this->db->prepare('
                 SELECT AVG(difficulty) as avg 
                 FROM action_rate 
-                HERE levelID = :id
+                WHERE levelID = :id
             ');
             $stmt->execute([':id' => $levelID]);
             $result = $stmt->fetchColumn();

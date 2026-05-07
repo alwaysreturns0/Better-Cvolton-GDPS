@@ -8,7 +8,8 @@
     require_once __DIR__."/lib/generateHash.php";
     require_once __DIR__."/rep/LevelRepository.php";
     require_once __DIR__."/data/LevelUploadDTO.php";
-    
+    require_once __DIR__."/data/LevelDownloadDTO.php";
+
     class Level {
         private LevelRepository $repo;
         private Lib $Lib;
@@ -43,53 +44,16 @@
             return "-1";
         }
 
-        public function download(int $accountID, int $levelID, $inc, $extras, $hostname): string {
-            if (!is_numeric($levelID)) return "-1";
-
-            $daily = false;
-            $feaID = 0;
-            
-            switch($levelID) {
-                case -1:
-                    $daily_data = $this->repo->get_daily(0);
-                    $levelID = (int) $daily_data['levelID'];
-                    
-                    if (!$daily_data) return "-1";
-
-                    $feaID = (int) $daily_data['feaID'];
-                    $daily = true;
-                    break;
-
-                case -2:
-                    $daily_data = $this->repo->get_daily(1);
-                    $levelID = (int) $daily_data['levelID'];
-                    
-                    if (!$daily_data) return "-1";
-
-                    $feaID = (int) $daily_data['feaID'] + 100001;
-                    $daily = true;
-                    break;
-
-                case -3:
-                    $daily_data = $this->repo->get_daily(2);
-                    $levelID = (int) $daily_data['levelID'];
-                    
-                    if (!$daily_data) return "-1";
-
-                    $feaID = (int) $daily_data['feaID'] + 200001;
-                    $daily = true;
-                    break;
-            }
-
-            $level = $this->repo->get_donwload_level($levelID);
+        public function download(LevelDownloadDTO $data): string {
+            $level = $this->repo->get_download_data($data);
             if (!$level) return "-1";
 
-            if ($inc && $this->repo->get_donwload_action($levelID, $hostname) < 2) {
-                $this->repo->increment_downloads($levelID);
-                $this->repo->download_action($levelID,  $hostname);
+            if ($level->inc && $this->repo->get_donwload_action($level->levelID, $level->hostname) < 2) {
+                $this->repo->increment_downloads($level->levelID);
+                $this->repo->download_action($level->levelID, $level->hostname);
             }
 
-            return $level->to_response($this->gameVersion, $this->binaryVersion, $daily, $feaID, (bool) $extras);
+            return $level->to_response();
         }
 
         public function get_daily(int $type): string {

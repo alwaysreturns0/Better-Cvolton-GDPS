@@ -15,18 +15,13 @@
 
 	if (!empty($_POST['levelID']) && $_POST['levelID'] != "") 
 	{
-		$accountID 			    = GJPCheck::getAccountIDOrDie();
-		$levelID			    = ExploitPatch::remove($_POST['levelID']);
-		$inc 				    = !empty($_POST['inc']) && $_POST['inc'];
-		$extras 			    = !empty($_POST['extras']) && $_POST['extras'];
-		$hostname			    = $Main->get_ip();
-		
-		$Level->binaryVersion	    = (!empty($_POST['binaryVersion'])) ? ExploitPatch::remove($_POST['levelID']) : 0;
-		$Level->gameVersion 		= (!empty($_POST['gameVersion'])) ? ExploitPatch::remove($_POST['gameVersion']) : 1;
-		
-		$downloadLevel = $Level->download($accountID, $levelID, $inc, $extras, $hostname);
-		
-		exit($downloadLevel);
+		$accountID = GJPCheck::getAccountIDOrDie();
+		$hostname = $Main->get_ip();
+
+		$data = LevelDownloadDTO::from_request($_POST, $hostname);
+		$download_level = $Level->download($data);
+
+		exit($download_level);
 	} 
 	
 	exit("-1");

@@ -2,6 +2,7 @@
     require_once 'LevelDTO.php';
     require_once '../lib/XORCipher.php';
     require_once '../lib/generateHash.php';
+    require_once '../lib/exploitPatch.php';
 
     class LevelDownloadDTO extends LevelDTO {
         public string $levelDesc            = '';
@@ -18,6 +19,25 @@
         public int $ts                      = 0;
         public int $secret                  = 0;
         public int $password                = 0;
+
+        public bool $daily                  = false;
+        public int $feaID                   = 0;
+        public bool $extras                 = false;
+        public bool $inc                    = false;
+        public string $hostname             = '';
+
+        public static function from_request(array $post, string $hostname): self {
+            $dto = new self();
+
+            $dto->levelID = (int) ExploitPatch::remove($post['levelID'] ?? 0);
+            $dto->inc = !empty($post['inc']) && $post['inc'];
+            $dto->extras = !empty($post['extras']) && $post['extras'];
+            $dto->hostname = $hostname;
+            $dto->gameVersion = !empty($post['gameVersion']) ? (int) ExploitPatch::remove($post['gameVersion']) : 1;
+            $dto->binaryVersion = !empty($post['binaryVersion']) ? (int) ExploitPatch::remove($post['binaryVersion']) : 0;
+            
+            return $dto;
+        }
 
         public static function download(array $row): self {
             $dto = new self();
@@ -40,23 +60,41 @@
             return $dto;
         }
 
-        public function to_response(int $gameVersion, int $binaryVersion, bool $daily = false, int $feaID = 0, bool $extras = false): string {
+        public function set_daily_data(int $feaID, int $dailyType): void {
+            $this->daily = true;
+
+            switch($dailyType) {
+                case -1: 
+                    $this->feaID = $feaID;
+                    break;
+
+                case -2:
+                    $this->feaID = $feaID + 100001;
+                    break;
+
+                case -3:
+                    $this->feaID = $feaID + 200001;
+                    break;
+            }
+        }
+
+        public function to_response(): string {
             $uploadDate = date('d/m/Y', $this->uploadDate);
             $updateDate = date('d/m/Y', $this->updateDate);
 
             $password = $this->password ?: 1;
             $xor = $password;
-            if ($gameVersion > 19 && $password != 0) {
+            if ($this->gameVersion > 19 && $password != 0) {
                 $xor = base64_encode(XORCipher::cipher($password, 26364));
             }
 
             $levelDesc = $this->levelDesc;
-            if ($gameVersion <= 18) {
+            if ($this->gameVersion <= 18) {
                 $levelDesc = base64_decode($levelDesc);
             }
 
             $levelString = $this->levelString;
-            if ($gameVersion > 18 && str_starts_with($levelString, 'kS1')) {
+            if ($this->gameVersion > 18 && str_starts_with($levelString, 'kS1')) {
                 $levelString = base64_encode(gzcompress($levelString));
                 $levelString = str_replace(['/', '+'], ['_', '-'], $levelString);
             }
@@ -100,19 +138,17 @@
                     ":53:{$this->sfxIDs}" .
                     ":57:{$this->ts}";
 
-            if ($daily) $response .= ":41:{$feaID}";
-            if ($extras) $response .= ":26:{$this->levelInfo}";
+            if ($this->daily) $response .= ":41:{$this->feaID}";
+            if ($this->extras) $response .= ":26:{$this->levelInfo}";
 
             $response .= "#" . GenerateHash::genSolo($levelString) . "#";
-            $hashString = "{$this->userID},{$this->starStars},{$this->starDemon},{$this->levelID},{$this->starCoins},{$this->starFeatured},{$password},{$feaID}";
+            $hashString = "{$this->userID},{$this->starStars},{$this->starDemon},{$this->levelID},{$this->starCoins},{$this->starFeatured},{$password},{$this->feaID}";
             $response .= GenerateHash::genSolo2($hashString);
 
-            if ($daily) $response .= "#{$this->userID}:{$this->userName}:{$this->extID}";
-            if ($binaryVersion == 30) $response .= "#{$hashString}";
+            if ($this->daily) $response .= "#{$this->userID}:{$this->userName}:{$this->extID}";
+            if ($this->binaryVersion == 30) $response .= "#{$hashString}";
 
             return $response;
         }
-
-
     }
 ?>
