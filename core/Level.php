@@ -6,7 +6,7 @@
     require_once __DIR__."/lib/XORCipher.php";
     require_once __DIR__."/lib/exploitPatch.php";
     require_once __DIR__."/lib/generateHash.php";
-    
+
     require_once __DIR__."/rep/LevelRepository.php";
     require_once __DIR__."/data/LevelUploadDTO.php";
     require_once __DIR__."/data/LevelDownloadDTO.php";
@@ -49,7 +49,7 @@
             $level = $this->repo->get_download_data($data);
             if (!$level) return "-1";
 
-            if ($level->inc && $this->repo->get_donwload_action($level->levelID, $level->hostname) < 2) {
+            if ($level->inc && $this->repo->get_download_action($level->levelID, $level->hostname) < 2) {
                 $this->repo->increment_downloads($level->levelID);
                 $this->repo->download_action($level->levelID, $level->hostname);
             }

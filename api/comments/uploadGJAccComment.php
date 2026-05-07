@@ -6,6 +6,9 @@
 
 	require_once "../../core/lib/GJPCheck.php";
 	require_once "../../core/lib/exploitPatch.php";
+
+	require_once "../../core/data/AccountCommentUploadDTO.php";
+
 	
 	$main 				= new Main();
 	$AccountComment 	= new AccountComments();
@@ -13,12 +16,9 @@
 	if (isset($_POST["userName"]) || isset( $_POST["comment"])) 
 	{
 		$accountID		= GJPCheck::getAccountIDOrDie();
-		$userName 		= ExploitPatch::remove($_POST["userName"]);
+		$data 			= AccountCommentUploadDTO::from_request($_POST, $accountID);
 
-		$userID			= $main->get_user_id($accountID, $userName);
-		$comment		= ExploitPatch::remove($_POST["comment"]);
-
-		$uploadComment = $AccountComment->upload_comment($accountID, $userID, $userName, $comment);
+		$uploadComment = $AccountComment->upload_comment($data);
 
 		exit($uploadComment);
 	}

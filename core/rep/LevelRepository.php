@@ -154,7 +154,7 @@
             return $stmt->execute([':id' => $levelID, ':ip' => $ip]);
         }
 
-        public function get_donwload_action(int $levelID, string $ip): int {
+        public function get_download_action(int $levelID, string $ip): int {
             $stmt = $this->db->prepare('
                 SELECT COUNT(*) FROM actions_downloads 
                 WHERE levelID = :id AND ip = INET6_ATON(:ip)
