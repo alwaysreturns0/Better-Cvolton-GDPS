@@ -21,7 +21,7 @@
 		$data = LevelDownloadDTO::from_request($_POST, $hostname);
 		$download_level = $Level->download($data);
 
-		exit($download_level);
+		exit((string) $download_level);
 	} 
 	
 	exit("-1");
