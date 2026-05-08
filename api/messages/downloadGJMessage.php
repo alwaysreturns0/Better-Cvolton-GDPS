@@ -1,22 +1,19 @@
 <?php
-	chdir(dirname(__FILE__));
-	require_once "../../core/Communication.php";
+    chdir(dirname(__FILE__));
+    require_once "../../core/Communication.php";
 
-	require_once "../../core/lib/GJPCheck.php";
-	require_once "../../core/lib/exploitPatch.php";
+    require_once "../../core/lib/GJPCheck.php";
+    require_once "../../core/lib/exploitPatch.php";
 
-	$Message 		= new Message();
+    $Message = new Message();
 
-	if (isset($_POST["messageID"])) 
-	{
-		$accountID = GJPCheck::getAccountIDOrDie();
-		$messageID = ExploitPatch::remove($_POST["messageID"]);
-		$isSender = isset($_POST["isSender"]) ? 1 : 0;
+    if (isset($_POST["messageID"])) {
+        $accountID = GJPCheck::getAccountIDOrDie();
+        
+        $dto = MessageDownloadDTO::from_request($_POST, $accountID);
+        $downloadMessage = $Message->download($dto);
 
-		$downloadMessage = $Message->download($accountID, $messageID, $isSender);
+        exit($downloadMessage);
+    }
 
-		exit($downloadMessage);
-	}
-
-	exit("-1");
-?>
+    exit("-1");

@@ -45,22 +45,22 @@
 
 	function generateQuery($groupBy, $requirements){
 		$queryString = "
-			SELECT total.${groupBy}, total.amount AS total, unrated.amount AS unrated, rated.amount AS rated, featured.amount AS featured, epic.amount AS epic
+			SELECT total." . $groupBy . ", total.amount AS total, unrated.amount AS unrated, rated.amount AS rated, featured.amount AS featured, epic.amount AS epic
 			FROM(
-				(SELECT ${groupBy}, count(*) AS amount FROM levels WHERE ${requirements} GROUP BY(${groupBy})) total
+				(SELECT " . $groupBy . ", count(*) AS amount FROM levels WHERE " . $requirements . " GROUP BY(" . $groupBy . ")) total
 				JOIN
-				(SELECT ${groupBy}, count(*) AS amount FROM levels WHERE ${requirements} AND starStars = 0 GROUP BY(${groupBy})) unrated
-				ON total.${groupBy} = unrated.${groupBy}
+				(SELECT " . $groupBy . ", count(*) AS amount FROM levels WHERE " . $requirements . " AND starStars = 0 GROUP BY(" . $groupBy . ")) unrated
+				ON total." . $groupBy . " = unrated." . $groupBy . "
 				JOIN
-				(SELECT ${groupBy}, count(*) AS amount FROM levels WHERE ${requirements} AND starStars <> 0 GROUP BY(${groupBy})) rated
-				ON total.${groupBy} = rated.${groupBy}
+				(SELECT " . $groupBy . ", count(*) AS amount FROM levels WHERE " . $requirements . " AND starStars <> 0 GROUP BY(" . $groupBy . ")) rated
+				ON total." . $groupBy . " = rated." . $groupBy . "
 				JOIN
-				(SELECT ${groupBy}, count(*) AS amount FROM levels WHERE ${requirements} AND starFeatured <> 0 GROUP BY(${groupBy})) featured
-				ON total.${groupBy} = featured.${groupBy}
+				(SELECT " . $groupBy . ", count(*) AS amount FROM levels WHERE " . $requirements . " AND starFeatured <> 0 GROUP BY(" . $groupBy . ")) featured
+				ON total." . $groupBy . " = featured." . $groupBy . "
 				JOIN
-				(SELECT ${groupBy}, count(*) AS amount FROM levels WHERE ${requirements} AND starEpic <> 0 GROUP BY(${groupBy})) epic
-				ON total.${groupBy} = epic.${groupBy}
-			) GROUP BY(total.${groupBy})
+				(SELECT " . $groupBy . ", count(*) AS amount FROM levels WHERE " . $requirements . " AND starEpic <> 0 GROUP BY(" . $groupBy . ")) epic
+				ON total." . $groupBy . " = epic." . $groupBy . "
+			) GROUP BY(total." . $groupBy . ")
 		";
 
 		return $queryString;
@@ -81,12 +81,12 @@
 		
 		echo "
 		<tr>
-			<td>${diffName}</td>
-			<td>${row['total']}</td>
-			<td>${row['unrated']}</td>
-			<td>${row['rated']}</td>
-			<td>${row['featured']}</td>
-			<td>${row['epic']}</td>
+			<td>" . $diffName . "</td>
+			<td>" . $row['total'] . "</td>
+			<td>" . $row['unrated'] . "</td>
+			<td>" . $row['rated'] . "</td>
+			<td>" . $row['featured'] . "</td>
+			<td>" . $row['epic'] . "</td>
 		</tr>
 		";
 	}
@@ -96,12 +96,12 @@
 		
 		echo "
 		<tr>
-			<td>${diffName}</td>
-			<td>${row['total']}</td>
-			<td>${row['unrated']}</td>
-			<td>${row['rated']}</td>
-			<td>${row['featured']}</td>
-			<td>${row['epic']}</td>
+			<td>" . $diffName . "</td>
+			<td>" . $row['total'] . "</td>
+			<td>" . $row['unrated'] . "</td>
+			<td>" . $row['rated'] . "</td>
+			<td>" . $row['featured'] . "</td>
+			<td>" . $row['epic'] . "</td>
 		</tr>
 		";
 	}
@@ -111,12 +111,12 @@
 		
 		echo "
 		<tr>
-			<td>${diffName}</td>
-			<td>${row['total']}</td>
-			<td>${row['unrated']}</td>
-			<td>${row['rated']}</td>
-			<td>${row['featured']}</td>
-			<td>${row['epic']}</td>
+			<td>" . $diffName . "</td>
+			<td>" . $row['total'] . "</td>
+			<td>" . $row['unrated'] . "</td>
+			<td>" . $row['rated'] . "</td>
+			<td>" . $row['featured'] . "</td>
+			<td>" . $row['epic'] . "</td>
 		</tr>
 		";
 	}
@@ -147,12 +147,12 @@
 		
 		echo "
 		<tr>
-			<td>${diffName['name']}</td>
-			<td>${row['total']}</td>
-			<td>${row['unrated']}</td>
-			<td>${row['rated']}</td>
-			<td>${row['featured']}</td>
-			<td>${row['epic']}</td>
+			<td>" . $diffName['name'] . "</td>
+			<td>" . $row['total'] . "</td>
+			<td>" . $row['unrated'] . "</td>
+			<td>" . $row['rated'] . "</td>
+			<td>" . $row['featured'] . "</td>
+			<td>" . $row['epic'] . "</td>
 		</tr>
 		";
 	}
@@ -177,7 +177,7 @@
 	echo "
 	<tr>
 		<td>Total</td>
-		<td>$thing</td>
+		<td>" . $thing . "</td>
 	</tr>
 	";
 	
@@ -188,7 +188,7 @@
 	echo "
 	<tr>
 		<td>Registered</td>
-		<td>$thing</td>
+		<td>" . $thing . "</td>
 	</tr>
 	";
 	
@@ -200,7 +200,7 @@
 	echo "
 	<tr>
 		<td>Active</td>
-		<td>$thing</td>
+		<td>" . $thing . "</td>
 	</tr>
 	";
 ?>

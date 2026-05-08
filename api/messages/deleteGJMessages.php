@@ -1,23 +1,20 @@
 <?php
-	chdir(dirname(__FILE__));
-	
-	require_once "../../core/Communication.php";
+    chdir(dirname(__FILE__));
+    
+    require_once "../../core/Communication.php";
 
-	require_once "../../core/lib/GJPCheck.php";
-	require_once "../../core/lib/exploitPatch.php";
+    require_once "../../core/lib/GJPCheck.php";
+    require_once "../../core/lib/exploitPatch.php";
 
-	$Message = new Message();
+    $Message = new Message();
 
-	if (isset($_POST['messageID']) || isset($_POST['messages'])) 
-	{
-		$messageID 		= ExploitPatch::remove($_POST["messageID"]);
-		$accountID 		= GJPCheck::getAccountIDOrDie();
-		$messages       = ExploitPatch::numbercolon($_POST["messages"]);
+    if (isset($_POST['messageID']) || isset($_POST['messages'])) {
+        $accountID = GJPCheck::getAccountIDOrDie();
+        
+        $dto = MessageDeleteDTO::from_request($_POST, $accountID);
+        $deleteMessage = $Message->delete($dto);
 
-		$deleteMessage = $Message->delete($accountID, 0, 0, 0, $messageID, $messages);
-
-		exit($deleteMessage);
-	}
-	
-	exit("-1");
-?>
+        exit($deleteMessage);
+    }
+    
+    exit("-1");

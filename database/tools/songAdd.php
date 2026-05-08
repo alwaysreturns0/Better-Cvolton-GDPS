@@ -23,7 +23,7 @@
 				break;
 			
 			default:
-				echo "Song reuploaded: <b>${result}</b><hr>";
+				echo "Song reuploaded: <b>" . $result . "</b><hr>";
 				break;
 		}
 	}

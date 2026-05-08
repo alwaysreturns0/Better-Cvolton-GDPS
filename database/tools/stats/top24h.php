@@ -21,7 +21,7 @@
 	foreach($result as &$gain) {
 		$x++;
 	
-		echo "<tr><td>$x</td><td>${gain['userID']}</td><td>${gain['userName']}</td><td>${gain['stars']}</td></tr>";
+		echo "<tr><td>$x</td><td>" . $gain['userID'] . "</td><td>" . $gain['userName'] . "</td><td>" . $gain['stars'] . "</td></tr>";
 	}
 ?>
 </tbody>

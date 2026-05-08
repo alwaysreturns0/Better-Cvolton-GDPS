@@ -94,7 +94,7 @@
 				    
 				    $activationInfo = SecurityConfig::$preactivateAccounts ? "No e-mail verification required, you can login." : "<a href='activateAccount.php'>Click here to activate it.</a>";
 				    
-				    echo "Account registred. ${activationInfo} <a href='/'>Go back to tools</a>";
+				    echo "Account registred. ". $activationInfo . " <a href='/'>Go back to tools</a>";
 			    }
 		    }
 	    }

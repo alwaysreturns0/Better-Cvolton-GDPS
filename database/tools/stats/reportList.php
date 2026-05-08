@@ -17,7 +17,7 @@
 	foreach($result as &$report) {
 		$levelName = htmlspecialchars($report['levelName'], ENT_QUOTES);
 		
-		echo "<tr><td>${report['levelID']}</td><td>$levelName</td><td>${report['reportsCount']} times</td></tr>";
+		echo "<tr><td>" . $report['levelID'] . "</td><td>$levelName</td><td>" . $report['reportsCount'] . " times</td></tr>";
 	}
 ?>
 	</tbody>
