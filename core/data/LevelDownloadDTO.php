@@ -1,8 +1,8 @@
 <?php
-    require_once __DIR__ . '/LevelDTO.php';
-    require_once __DIR__ . '/../lib/XORCipher.php';
-    require_once __DIR__ . '/../lib/generateHash.php';
-    require_once __DIR__ . '/../lib/exploitPatch.php';
+    require_once 'LevelDTO.php';
+    require_once '../lib/XORCipher.php';
+    require_once '../lib/generateHash.php';
+    require_once '../lib/exploitPatch.php';
 
     class LevelDownloadDTO extends LevelDTO {
         public string $levelDesc            = '';

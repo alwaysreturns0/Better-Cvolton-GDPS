@@ -34,8 +34,8 @@
 
             $this->repo->action_delete($levelID, $userID);
 
-            $path = __DIR__."/../databas/data/levels/$levelID";
-            $deletedPath = __DIR__."/../databas/data/levels/deleted/$levelID";
+            $path = __DIR__."/../database/data/levels/$levelID";
+            $deletedPath = __DIR__."/../database/data/levels/deleted/$levelID";
             
             if (file_exists($path)) {
                 rename($path, $deletedPath);
@@ -155,14 +155,14 @@
 
             if ($extID !== null) {
                 if ($this->repo->update($data, $extID)) {
-                    file_put_contents(__DIR__."/../databas/data/levels/$extID", $data->levelString);
+                    file_put_contents(__DIR__."/../database/data/levels/$extID", $data->levelString);
                     return $extID;
                 }
             } 
             else {
                 $newID = $this->repo->create($data);
                 if ($newID > 0) {
-                    file_put_contents(__DIR__."/../databas/data/levels/$newID", $data->levelString);
+                    file_put_contents(__DIR__."/../database/data/levels/$newID", $data->levelString);
                     return $newID;
                 }
             }

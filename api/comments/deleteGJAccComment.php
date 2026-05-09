@@ -15,8 +15,8 @@
         $accountID = GJPCheck::getAccountIDOrDie();
         $hasPermission = $main->getRolePermission($accountID, "actionDeleteComment");
         
-        $dto = AccountCommentDeleteDTO::from_request($_POST, $accountID, $hasPermission);
-        $deleteAccountComment = $AccountComment->delete_comment($dto);
+        $data = AccountCommentDeleteDTO::from_request($_POST, $accountID, $hasPermission);
+        $deleteAccountComment = $AccountComment->delete_comment($data);
 
         exit($deleteAccountComment);
     } 

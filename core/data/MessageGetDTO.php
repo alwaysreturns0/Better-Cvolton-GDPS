@@ -1,5 +1,5 @@
 <?php
-    require_once __DIR__ . '/../lib/ExploitPatch.php';
+    require_once __DIR__ . '/../lib/exploitPatch.php';
 
     class MessageGetDTO {
         public int $accountID = 0;

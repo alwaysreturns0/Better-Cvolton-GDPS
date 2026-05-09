@@ -1,17 +1,15 @@
 <?php
-	chdir(dirname(__FILE__));
-	require_once "../../core/Communication.php";
+    chdir(dirname(__FILE__));
+    require_once "../../core/Communication.php";
 
-	require_once "../../core/lib/GJPCheck.php";
-	require_once "../../core/lib/exploitPatch.php";
+    require_once "../../core/lib/GJPCheck.php";
+    require_once "../../core/lib/exploitPatch.php";
 
-	$message 		= new Message();
+    $Message = new Message();
 
-	$accountID 		= GJPCheck::getAccountIDOrDie();
-	$page 			= ExploitPatch::remove($_POST["page"]);
-	$getSent 		= isset($_POST["getSent"]) ? 1 : 0;
+    $accountID = GJPCheck::getAccountIDOrDie();
+    
+    $data = MessageGetDTO::from_request($_POST, $accountID);
+    $getMessages = $Message->getData($data);
 
-	$getMessages = $message->getData($accountID, 0, $page, $getSent);
-
-	exit($getMessages);
-?>
+    exit($getMessages);

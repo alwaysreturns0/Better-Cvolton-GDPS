@@ -14,7 +14,7 @@
 
 	$List->followed = ExploitPatch::numbercolon($_POST["followed"]);
 	$List->difficulty = (!empty($_POST["diff"])) ? ExploitPatch::numbercolon($_POST["diff"]) : "-";
-	$List->demonFilter = (!empty($_POST["demonFilter"])) ? ExploitPatch::number($_POST["demonFilter"]) : 0;
+	$List->demon_filter = (!empty($_POST["demonFilter"])) ? ExploitPatch::number($_POST["demonFilter"]) : 0;
 	$List->star = ExploitPatch::number($_POST["star"]);
 	$List->featured = ExploitPatch::remove($_POST["featured"]);
 	$List->string = ExploitPatch::remove($_POST["str"]);
