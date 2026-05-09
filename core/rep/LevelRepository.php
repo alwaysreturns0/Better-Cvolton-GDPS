@@ -1,6 +1,6 @@
 <?php
-    require_once '../data/LevelDTO.php';
-    require_once '../data/LevelDownloadDTO.php';
+    require_once __DIR__ . '/../data/LevelDTO.php';
+    require_once __DIR__ . '/../data/LevelDownloadDTO.php';
     
     class LevelRepository {
         private PDO $db;

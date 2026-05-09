@@ -34,7 +34,7 @@
             $dto->type = (int)($params['type'] ?? 0);
             $dto->gameVersion = (int)($params['gameVersion'] ?? 30);
             $dto->binaryVersion = (int)($params['binaryVersion'] ?? 0);
-            $dto->difficulty = $params['diff'] ?? $params['difficulty'] ?? 0;
+            $dto->difficulty = (int) $params['diff'] ?? $params['diff'] ?? 0;
             $dto->demonFilter = (int)($params['demonFilter'] ?? 0);
             $dto->starFeatured = (int)($params['starFeatured'] ?? 0);
             $dto->original = (int)($params['original'] ?? 0);

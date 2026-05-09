@@ -50,7 +50,7 @@
             $sql = "SELECT count(*) FROM levels LEFT JOIN users ON levels.userID = users.userID ";
             $sql .= $parts['joins'];
 
-            if (!empty($part['where'])) {
+            if (!empty($parts['where'])) {
                 $sql .= " WHERE " . implode(" AND ", $parts['where']);
             }
 
@@ -113,24 +113,41 @@
                 $params[] = "levelLength IN ($len)";
             }
 
-            if (!empty($data->starFeatured)) $epicParams[] = "starFeatured = 1";
-            if (!empty($data->starEpic)) $epicParams[] = "starEpic = 1";
-            if (!empty($data->mythic)) $epicParams[] = "starEpic = 2";
-            if (!empty($data->legendary)) $epicParams[] = "starEpic = 3";
+            if (!empty($data->starFeatured)) $epic_params[] = "starFeatured = 1";
+            if (!empty($data->starEpic)) $epic_params[] = "starEpic = 1";
+            if (!empty($data->mythic)) $epic_params[] = "starEpic = 2";
+            if (!empty($data->legendary)) $epic_params[] = "starEpic = 3";
 
-            if (!empty($epicParams)) {
-                $params[] = "(" . implode(" OR ", $epicParams) . ")";
+            if (!empty($epic_params)) {
+                $params[] = "(" . implode(" OR ", $epic_params) . ")";
             }
 
-            $params[] = $this->get_diff($data);
-            $type_data = $this->get_type($data);
+            $diff_data = $this->get_diff($data);
+            if (!empty($diff_data)) {
+                $params = array_merge($params, $diff_data);
+            }
 
-            $params[] = $type_data['params'];
-            $order = $type_data['order'];
+            $type_data = $this->get_type($data);
+            if (!empty($type_data['params'])) {
+                if (is_array($type_data['params'])) {
+                    $params = array_merge($params, $type_data['params']);
+                } else {
+                    $params[] = $type_data['params'];
+                }
+            }
+            
+            if (!empty($type_data['order'])) {
+                $order = $type_data['order'];
+            }
+            
             $is_search_ID = $type_data['is_search_ID'];
             $unlisted = $type_data['unlisted'];
+            
+            if (!empty($type_data['joins'])) {
+                $joins = $type_data['joins'];
+            }
 
-            if (is_numeric($data->string) && $is_search_ID && $unlisted != null) {
+            if (is_numeric($data->string) && $is_search_ID && $unlisted !== null) {
                 $params[] = 'unlisted = ' . $unlisted;
             }
 
@@ -165,13 +182,15 @@
                     break;
                 case -3: 
                     $params[] = "starAuto = '1'";
-
+                    break;
                 
                 case "-": break;
 
                 default: 
-                    $difficulty = str_replace(",", "0,", $data->difficulty) . "0";
-                    $params[] = "starDifficulty IN ($difficulty) AND starAuto = '0' AND starDemon = '0'";
+                    if ($data->difficulty) {
+                        $difficulty = str_replace(",", "0,", $data->difficulty) . "0";
+                        $params[] = "starDifficulty IN ($difficulty) AND starAuto = '0' AND starDemon = '0'";
+                    }
                     break;
             }
 
@@ -180,9 +199,10 @@
         
         private function get_type(LevelSearchDTO $data): array {
             $params = [];
-            $order = [];
+            $order = "uploadDate DESC";
             $is_search_ID = false;
             $unlisted = null;
+            $joins = '';
 
             switch ($data->type) {
                 case 0:
@@ -192,9 +212,9 @@
                             $params[] = "levelID = '" . $data->string . "'";
                             $is_search_ID = true;
 
-                            $unlisted = $this->db->prepare("SELECT unlisted FROM levels WHERE levelID = " . (int)$data->string);
-                            $unlisted->execute();
-                            $unlisted = $unlisted->fetchColumn();
+                            $unlst = $this->db->prepare("SELECT unlisted FROM levels WHERE levelID = " . (int)$data->string);
+                            $unlst->execute();
+                            $unlisted = $unlst->fetchColumn();
                         } else {
                             $params[] = "levelName LIKE '%" . $data->string . "%'";
                         }
@@ -230,7 +250,7 @@
                 case 10:
                 case 19:
                     $params[] = "levelID IN (" . $data->string . ")";
-                    $order = false;
+                    $order = "";
                     break;
                 case 11:
                     $params[] = "NOT starStars = 0";
@@ -267,9 +287,12 @@
                     break;
             }
 
-            return array('params' => $params, 'order' => $order, 'is_search_ID' => $is_search_ID, 'unlisted' => $unlisted);
+            return [
+                'params' => $params,
+                'order' => $order,
+                'is_search_ID' => $is_search_ID,
+                'unlisted' => $unlisted,
+                'joins' => $joins
+            ];
         }
-
-        
     }
-?>

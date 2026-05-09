@@ -60,7 +60,7 @@
             $offset = $page * 10;
             
             $stmt = $this->db->prepare("
-                SELECT userID, commentID, comment, likes, isSpam, timestamp 
+                SELECT userName, userID, commentID, comment, likes, isSpam, timestamp 
                 FROM acccomments 
                 WHERE userID = :userID 
                 ORDER BY timeStamp DESC 

@@ -5,8 +5,8 @@
 	require_once "../../core/lib/GJPCheck.php";
 	require_once "../../core/lib/exploitPatch.php";
 
-	require_once __DIR__."/data/LevelSearchDTO.php";
-    require_once __DIR__."/rep/SearchRepository.php";
+	require_once "../../core/data/LevelSearchDTO.php";
+    require_once "../../core/rep/SearchRepository.php";
 	
 	$LevelSearch		= new LevelSearch();
 	$accointID 			= GJPCheck::getAccountIDOrDie();
